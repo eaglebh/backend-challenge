@@ -69,9 +69,9 @@ entity OrderItem {
 
 entity Address {
   streetAddress String
-	postalCode String
-	city String
-	stateProvince String
+  postalCode String
+  city String
+  stateProvince String
   country String
 }
 
@@ -81,8 +81,9 @@ entity StoreInfo {
 
 entity Payment {
   status PaymentStatus
-	creditCardNumber String
+  creditCardNumber String
   paymentDate LocalDate
+  orderId UUID
 }
 
 enum OrderStatus {

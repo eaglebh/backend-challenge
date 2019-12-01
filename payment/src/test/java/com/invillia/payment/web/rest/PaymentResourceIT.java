@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.UUID;
 
 import static com.invillia.payment.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,6 +46,9 @@ public class PaymentResourceIT {
 
     private static final LocalDate DEFAULT_PAYMENT_DATE = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_PAYMENT_DATE = LocalDate.now(ZoneId.systemDefault());
+
+    private static final UUID DEFAULT_ORDER_ID = UUID.randomUUID();
+    private static final UUID UPDATED_ORDER_ID = UUID.randomUUID();
 
     @Autowired
     private PaymentRepository paymentRepository;
@@ -93,7 +97,8 @@ public class PaymentResourceIT {
         Payment payment = new Payment()
             .status(DEFAULT_STATUS)
             .creditCardNumber(DEFAULT_CREDIT_CARD_NUMBER)
-            .paymentDate(DEFAULT_PAYMENT_DATE);
+            .paymentDate(DEFAULT_PAYMENT_DATE)
+            .orderId(DEFAULT_ORDER_ID);
         return payment;
     }
     /**
@@ -106,7 +111,8 @@ public class PaymentResourceIT {
         Payment payment = new Payment()
             .status(UPDATED_STATUS)
             .creditCardNumber(UPDATED_CREDIT_CARD_NUMBER)
-            .paymentDate(UPDATED_PAYMENT_DATE);
+            .paymentDate(UPDATED_PAYMENT_DATE)
+            .orderId(UPDATED_ORDER_ID);
         return payment;
     }
 
@@ -133,6 +139,7 @@ public class PaymentResourceIT {
         assertThat(testPayment.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testPayment.getCreditCardNumber()).isEqualTo(DEFAULT_CREDIT_CARD_NUMBER);
         assertThat(testPayment.getPaymentDate()).isEqualTo(DEFAULT_PAYMENT_DATE);
+        assertThat(testPayment.getOrderId()).isEqualTo(DEFAULT_ORDER_ID);
     }
 
     @Test
@@ -168,7 +175,8 @@ public class PaymentResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(payment.getId().intValue())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].creditCardNumber").value(hasItem(DEFAULT_CREDIT_CARD_NUMBER)))
-            .andExpect(jsonPath("$.[*].paymentDate").value(hasItem(DEFAULT_PAYMENT_DATE.toString())));
+            .andExpect(jsonPath("$.[*].paymentDate").value(hasItem(DEFAULT_PAYMENT_DATE.toString())))
+            .andExpect(jsonPath("$.[*].orderId").value(hasItem(DEFAULT_ORDER_ID.toString())));
     }
     
     @Test
@@ -184,7 +192,8 @@ public class PaymentResourceIT {
             .andExpect(jsonPath("$.id").value(payment.getId().intValue()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.creditCardNumber").value(DEFAULT_CREDIT_CARD_NUMBER))
-            .andExpect(jsonPath("$.paymentDate").value(DEFAULT_PAYMENT_DATE.toString()));
+            .andExpect(jsonPath("$.paymentDate").value(DEFAULT_PAYMENT_DATE.toString()))
+            .andExpect(jsonPath("$.orderId").value(DEFAULT_ORDER_ID.toString()));
     }
 
     @Test
@@ -210,7 +219,8 @@ public class PaymentResourceIT {
         updatedPayment
             .status(UPDATED_STATUS)
             .creditCardNumber(UPDATED_CREDIT_CARD_NUMBER)
-            .paymentDate(UPDATED_PAYMENT_DATE);
+            .paymentDate(UPDATED_PAYMENT_DATE)
+            .orderId(UPDATED_ORDER_ID);
 
         restPaymentMockMvc.perform(put("/api/payments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -224,6 +234,7 @@ public class PaymentResourceIT {
         assertThat(testPayment.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testPayment.getCreditCardNumber()).isEqualTo(UPDATED_CREDIT_CARD_NUMBER);
         assertThat(testPayment.getPaymentDate()).isEqualTo(UPDATED_PAYMENT_DATE);
+        assertThat(testPayment.getOrderId()).isEqualTo(UPDATED_ORDER_ID);
     }
 
     @Test

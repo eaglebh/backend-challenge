@@ -1,11 +1,13 @@
 package com.invillia.payment.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import com.invillia.payment.domain.enumeration.PaymentStatus;
 
@@ -32,6 +34,10 @@ public class Payment implements Serializable {
 
     @Column(name = "payment_date")
     private LocalDate paymentDate;
+
+    @Type(type = "uuid-char")
+    @Column(name = "order_id", length = 36)
+    private UUID orderId;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -80,6 +86,19 @@ public class Payment implements Serializable {
     public void setPaymentDate(LocalDate paymentDate) {
         this.paymentDate = paymentDate;
     }
+
+    public UUID getOrderId() {
+        return orderId;
+    }
+
+    public Payment orderId(UUID orderId) {
+        this.orderId = orderId;
+        return this;
+    }
+
+    public void setOrderId(UUID orderId) {
+        this.orderId = orderId;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -105,6 +124,7 @@ public class Payment implements Serializable {
             ", status='" + getStatus() + "'" +
             ", creditCardNumber='" + getCreditCardNumber() + "'" +
             ", paymentDate='" + getPaymentDate() + "'" +
+            ", orderId='" + getOrderId() + "'" +
             "}";
     }
 }
