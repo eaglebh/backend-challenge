@@ -1,0 +1,120 @@
+application {
+  config {
+    baseName gateway,
+    applicationType gateway,
+    packageName com.invillia.gateway,
+    serviceDiscoveryType eureka,
+    authenticationType jwt,
+    prodDatabaseType mariadb,
+    cacheProvider hazelcast,
+    testFrameworks [protractor],
+    skipClient true
+  }
+  entities StoreInfo, OrderInfo, OrderItem, Payment, Address
+}
+
+application {
+  config {
+    baseName store,
+    applicationType microservice,
+    packageName com.invillia.store,
+    serviceDiscoveryType eureka
+    authenticationType jwt,
+    prodDatabaseType mariadb,
+    serverPort 8081,
+    skipUserManagement true
+  }
+  entities StoreInfo, Address
+}
+
+application {
+  config {
+    baseName order,
+    applicationType microservice,
+    packageName com.invillia.order,
+    serviceDiscoveryType eureka
+    authenticationType jwt,
+    prodDatabaseType mariadb,
+    serverPort 8082,
+    skipUserManagement true
+  }
+  entities OrderInfo, OrderItem, Address
+}
+
+application {
+  config {
+    baseName payment,
+    applicationType microservice,
+    packageName com.invillia.payment,
+    serviceDiscoveryType eureka
+    authenticationType jwt,
+    prodDatabaseType mariadb,
+    serverPort 8083,
+    skipUserManagement true
+  }
+  entities Payment
+}
+
+
+entity OrderInfo {
+  confirmationDate LocalDate
+  status OrderStatus
+}
+
+entity OrderItem {
+  countryName String
+}
+
+entity Address {
+  streetAddress String
+	postalCode String
+	city String
+	stateProvince String
+  country String
+}
+
+entity StoreInfo {
+  name String required
+}
+
+entity Payment {
+  status PaymentStatus
+	creditCardNumber String
+  paymentDate LocalDate
+}
+
+enum OrderStatus {
+  NEW, PROCESSING, PENDING_PAYMENT, ON_HOLD, PAYMENT_REVIEW, COMPLETE, CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING, INCORRECT_DATA, NO_FUNDS, CANCELLED, DONE
+}
+
+relationship OneToOne {
+  StoreInfo{address} to Address , OrderInfo{address} to Address
+}
+
+//relationship OneToMany {
+//	Store{order} to Order,
+//	Order{item} to OrderItem
+//}
+
+service StoreInfo, OrderInfo, OrderItem, Address, Payment with serviceClass
+
+// Set pagination options
+paginate StoreInfo, OrderInfo, OrderItem with pagination
+
+// Use Data Transfert Objects (DTO)
+// dto * with mapstruct
+
+microservice StoreInfo, Address with store
+microservice OrderInfo, OrderItem, Address with order
+microservice Payment with payment
+
+deployment {
+  deploymentType docker-compose
+  appsFolders [gateway, store, order, payment]
+  dockerRepositoryName "jmicro"
+  consoleOptions [zipkin]
+}
