@@ -2,8 +2,16 @@
     "name": "OrderItem",
     "fields": [
         {
-            "fieldName": "countryName",
+            "fieldName": "description",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "unitPrice",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "quantity",
+            "fieldType": "Integer"
         }
     ],
     "relationships": [

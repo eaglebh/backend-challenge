@@ -64,7 +64,9 @@ entity OrderInfo {
 }
 
 entity OrderItem {
-  countryName String
+  description String
+  unitPrice BigDecimal
+  quantity Integer
 }
 
 entity Address {

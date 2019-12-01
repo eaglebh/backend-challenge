@@ -16,7 +16,13 @@
             <column name="id" type="${uuidType}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="country_name" type="varchar(255)">
+            <column name="description" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="unit_price" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="quantity" type="integer">
                 <constraints nullable="true" />
             </column>
             <column name="order_id" type="${uuidType}">
@@ -45,7 +51,9 @@
                   separator=";"
                   tableName="order_item">
             <column name="id" type="string"/>
-            <column name="country_name" type="string"/>
+            <column name="description" type="string"/>
+            <column name="unit_price" type="numeric"/>
+            <column name="quantity" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here, do not remove-->
         </loadData>
     </changeSet>

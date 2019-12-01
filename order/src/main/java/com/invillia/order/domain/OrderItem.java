@@ -7,6 +7,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -24,8 +25,14 @@ public class OrderItem implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "country_name")
-    private String countryName;
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "unit_price", precision = 21, scale = 2)
+    private BigDecimal unitPrice;
+
+    @Column(name = "quantity")
+    private Integer quantity;
 
     @ManyToOne
     @JsonIgnoreProperties("items")
@@ -40,17 +47,43 @@ public class OrderItem implements Serializable {
         this.id = id;
     }
 
-    public String getCountryName() {
-        return countryName;
+    public String getDescription() {
+        return description;
     }
 
-    public OrderItem countryName(String countryName) {
-        this.countryName = countryName;
+    public OrderItem description(String description) {
+        this.description = description;
         return this;
     }
 
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
+    }
+
+    public OrderItem unitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+        return this;
+    }
+
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public OrderItem quantity(Integer quantity) {
+        this.quantity = quantity;
+        return this;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public OrderInfo getOrder() {
@@ -87,7 +120,9 @@ public class OrderItem implements Serializable {
     public String toString() {
         return "OrderItem{" +
             "id=" + getId() +
-            ", countryName='" + getCountryName() + "'" +
+            ", description='" + getDescription() + "'" +
+            ", unitPrice=" + getUnitPrice() +
+            ", quantity=" + getQuantity() +
             "}";
     }
 }

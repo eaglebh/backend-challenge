@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,8 +36,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = OrderApp.class)
 public class OrderItemResourceIT {
 
-    private static final String DEFAULT_COUNTRY_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_COUNTRY_NAME = "BBBBBBBBBB";
+    private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
+    private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
+
+    private static final BigDecimal DEFAULT_UNIT_PRICE = new BigDecimal(1);
+    private static final BigDecimal UPDATED_UNIT_PRICE = new BigDecimal(2);
+
+    private static final Integer DEFAULT_QUANTITY = 1;
+    private static final Integer UPDATED_QUANTITY = 2;
 
     @Autowired
     private OrderItemRepository orderItemRepository;
@@ -83,7 +90,9 @@ public class OrderItemResourceIT {
      */
     public static OrderItem createEntity(EntityManager em) {
         OrderItem orderItem = new OrderItem()
-            .countryName(DEFAULT_COUNTRY_NAME);
+            .description(DEFAULT_DESCRIPTION)
+            .unitPrice(DEFAULT_UNIT_PRICE)
+            .quantity(DEFAULT_QUANTITY);
         return orderItem;
     }
     /**
@@ -94,7 +103,9 @@ public class OrderItemResourceIT {
      */
     public static OrderItem createUpdatedEntity(EntityManager em) {
         OrderItem orderItem = new OrderItem()
-            .countryName(UPDATED_COUNTRY_NAME);
+            .description(UPDATED_DESCRIPTION)
+            .unitPrice(UPDATED_UNIT_PRICE)
+            .quantity(UPDATED_QUANTITY);
         return orderItem;
     }
 
@@ -118,7 +129,9 @@ public class OrderItemResourceIT {
         List<OrderItem> orderItemList = orderItemRepository.findAll();
         assertThat(orderItemList).hasSize(databaseSizeBeforeCreate + 1);
         OrderItem testOrderItem = orderItemList.get(orderItemList.size() - 1);
-        assertThat(testOrderItem.getCountryName()).isEqualTo(DEFAULT_COUNTRY_NAME);
+        assertThat(testOrderItem.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testOrderItem.getUnitPrice()).isEqualTo(DEFAULT_UNIT_PRICE);
+        assertThat(testOrderItem.getQuantity()).isEqualTo(DEFAULT_QUANTITY);
     }
 
     @Test
@@ -152,7 +165,9 @@ public class OrderItemResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(orderItem.getId().toString())))
-            .andExpect(jsonPath("$.[*].countryName").value(hasItem(DEFAULT_COUNTRY_NAME)));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].unitPrice").value(hasItem(DEFAULT_UNIT_PRICE.intValue())))
+            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)));
     }
 
     @Test
@@ -166,7 +181,9 @@ public class OrderItemResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(orderItem.getId().toString()))
-            .andExpect(jsonPath("$.countryName").value(DEFAULT_COUNTRY_NAME));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
+            .andExpect(jsonPath("$.unitPrice").value(DEFAULT_UNIT_PRICE.intValue()))
+            .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY));
     }
 
     @Test
@@ -190,7 +207,9 @@ public class OrderItemResourceIT {
         // Disconnect from session so that the updates on updatedOrderItem are not directly saved in db
         em.detach(updatedOrderItem);
         updatedOrderItem
-            .countryName(UPDATED_COUNTRY_NAME);
+            .description(UPDATED_DESCRIPTION)
+            .unitPrice(UPDATED_UNIT_PRICE)
+            .quantity(UPDATED_QUANTITY);
 
         restOrderItemMockMvc.perform(put("/api/order-items")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -201,7 +220,9 @@ public class OrderItemResourceIT {
         List<OrderItem> orderItemList = orderItemRepository.findAll();
         assertThat(orderItemList).hasSize(databaseSizeBeforeUpdate);
         OrderItem testOrderItem = orderItemList.get(orderItemList.size() - 1);
-        assertThat(testOrderItem.getCountryName()).isEqualTo(UPDATED_COUNTRY_NAME);
+        assertThat(testOrderItem.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testOrderItem.getUnitPrice()).isEqualTo(UPDATED_UNIT_PRICE);
+        assertThat(testOrderItem.getQuantity()).isEqualTo(UPDATED_QUANTITY);
     }
 
     @Test
