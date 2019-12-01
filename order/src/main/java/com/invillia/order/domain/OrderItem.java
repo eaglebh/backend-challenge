@@ -10,6 +10,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import com.invillia.order.domain.enumeration.OrderItemStatus;
+
 /**
  * A OrderItem.
  */
@@ -33,6 +35,10 @@ public class OrderItem implements Serializable {
 
     @Column(name = "quantity")
     private Integer quantity;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private OrderItemStatus status;
 
     @ManyToOne
     @JsonIgnoreProperties("items")
@@ -86,6 +92,19 @@ public class OrderItem implements Serializable {
         this.quantity = quantity;
     }
 
+    public OrderItemStatus getStatus() {
+        return status;
+    }
+
+    public OrderItem status(OrderItemStatus status) {
+        this.status = status;
+        return this;
+    }
+
+    public void setStatus(OrderItemStatus status) {
+        this.status = status;
+    }
+
     public OrderInfo getOrder() {
         return order;
     }
@@ -123,6 +142,7 @@ public class OrderItem implements Serializable {
             ", description='" + getDescription() + "'" +
             ", unitPrice=" + getUnitPrice() +
             ", quantity=" + getQuantity() +
+            ", status='" + getStatus() + "'" +
             "}";
     }
 }

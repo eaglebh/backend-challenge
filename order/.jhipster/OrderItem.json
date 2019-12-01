@@ -12,6 +12,11 @@
         {
             "fieldName": "quantity",
             "fieldType": "Integer"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "OrderItemStatus",
+            "fieldValues": "PROCESSING,OK,OUT_OF_STOCK,CANCELLED"
         }
     ],
     "relationships": [

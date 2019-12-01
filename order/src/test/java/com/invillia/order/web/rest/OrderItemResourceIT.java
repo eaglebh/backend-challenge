@@ -30,6 +30,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.invillia.order.domain.enumeration.OrderItemStatus;
 /**
  * Integration tests for the {@link OrderItemResource} REST controller.
  */
@@ -44,6 +45,9 @@ public class OrderItemResourceIT {
 
     private static final Integer DEFAULT_QUANTITY = 1;
     private static final Integer UPDATED_QUANTITY = 2;
+
+    private static final OrderItemStatus DEFAULT_STATUS = OrderItemStatus.PROCESSING;
+    private static final OrderItemStatus UPDATED_STATUS = OrderItemStatus.OK;
 
     @Autowired
     private OrderItemRepository orderItemRepository;
@@ -92,7 +96,8 @@ public class OrderItemResourceIT {
         OrderItem orderItem = new OrderItem()
             .description(DEFAULT_DESCRIPTION)
             .unitPrice(DEFAULT_UNIT_PRICE)
-            .quantity(DEFAULT_QUANTITY);
+            .quantity(DEFAULT_QUANTITY)
+            .status(DEFAULT_STATUS);
         return orderItem;
     }
     /**
@@ -105,7 +110,8 @@ public class OrderItemResourceIT {
         OrderItem orderItem = new OrderItem()
             .description(UPDATED_DESCRIPTION)
             .unitPrice(UPDATED_UNIT_PRICE)
-            .quantity(UPDATED_QUANTITY);
+            .quantity(UPDATED_QUANTITY)
+            .status(UPDATED_STATUS);
         return orderItem;
     }
 
@@ -132,15 +138,17 @@ public class OrderItemResourceIT {
         assertThat(testOrderItem.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testOrderItem.getUnitPrice()).isEqualTo(DEFAULT_UNIT_PRICE);
         assertThat(testOrderItem.getQuantity()).isEqualTo(DEFAULT_QUANTITY);
+        assertThat(testOrderItem.getStatus()).isEqualTo(DEFAULT_STATUS);
     }
 
     @Test
     @Transactional
     public void createOrderItemWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = orderItemRepository.findAll().size();
+        List<OrderItem> orderItemListBeforeCreate = orderItemRepository.findAll();
+        int databaseSizeBeforeCreate = orderItemListBeforeCreate.size();
 
         // Create the OrderItem with an existing ID
-        orderItem.setId(UUID.randomUUID());
+        orderItem.setId(orderItemListBeforeCreate.get(0).getId());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restOrderItemMockMvc.perform(post("/api/order-items")
@@ -167,7 +175,8 @@ public class OrderItemResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(orderItem.getId().toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].unitPrice").value(hasItem(DEFAULT_UNIT_PRICE.intValue())))
-            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)));
+            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)))
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
 
     @Test
@@ -183,7 +192,8 @@ public class OrderItemResourceIT {
             .andExpect(jsonPath("$.id").value(orderItem.getId().toString()))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
             .andExpect(jsonPath("$.unitPrice").value(DEFAULT_UNIT_PRICE.intValue()))
-            .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY));
+            .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY))
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
     }
 
     @Test
@@ -209,7 +219,8 @@ public class OrderItemResourceIT {
         updatedOrderItem
             .description(UPDATED_DESCRIPTION)
             .unitPrice(UPDATED_UNIT_PRICE)
-            .quantity(UPDATED_QUANTITY);
+            .quantity(UPDATED_QUANTITY)
+            .status(UPDATED_STATUS);
 
         restOrderItemMockMvc.perform(put("/api/order-items")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -223,6 +234,7 @@ public class OrderItemResourceIT {
         assertThat(testOrderItem.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testOrderItem.getUnitPrice()).isEqualTo(UPDATED_UNIT_PRICE);
         assertThat(testOrderItem.getQuantity()).isEqualTo(UPDATED_QUANTITY);
+        assertThat(testOrderItem.getStatus()).isEqualTo(UPDATED_STATUS);
     }
 
     @Test

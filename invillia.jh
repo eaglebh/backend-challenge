@@ -67,6 +67,7 @@ entity OrderItem {
   description String
   unitPrice BigDecimal
   quantity Integer
+  status OrderItemStatus
 }
 
 entity Address {
@@ -90,6 +91,10 @@ entity Payment {
 
 enum OrderStatus {
   NEW, PROCESSING, PENDING_PAYMENT, ON_HOLD, PAYMENT_REVIEW, COMPLETE, CANCELLED
+}
+
+enum OrderItemStatus {
+  PROCESSING, OK, OUT_OF_STOCK, CANCELLED
 }
 
 enum PaymentStatus {
