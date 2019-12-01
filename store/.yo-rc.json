@@ -1,0 +1,43 @@
+{
+  "generator-jhipster": {
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "enableHibernateCache": true,
+    "enableSwaggerCodegen": false,
+    "enableTranslation": true,
+    "jhiPrefix": "jhi",
+    "languages": [
+      "en",
+      "fr"
+    ],
+    "messageBroker": false,
+    "nativeLanguage": "en",
+    "packageName": "com.invillia.store",
+    "packageFolder": "com/invillia/store",
+    "prodDatabaseType": "mariadb",
+    "searchEngine": false,
+    "serviceDiscoveryType": "eureka",
+    "skipClient": true,
+    "testFrameworks": [],
+    "websocket": false,
+    "baseName": "store",
+    "applicationType": "microservice",
+    "authenticationType": "jwt",
+    "serverPort": "8081",
+    "skipUserManagement": true,
+    "jhipsterVersion": "6.5.1",
+    "buildTool": "maven",
+    "clientPackageManager": "npm",
+    "cacheProvider": "hazelcast",
+    "jwtSecretKey": "NDE2YmFlMmNhYTA1ZmI1NzI2Yjk0YjAyYjQ5ZjQ4ZmUwYjhjZDdmYTM0ZjlhYWNiMTJhYjZjZGI4NWM2NzgwZTQxMTI5MjA3OWNlM2NhYTIzM2I4NWM3NWU5MzFiZTViNDE2MDM1MzRjMjg1YTFmODk2NmRlMWI0MDQwNDE1MDE=",
+    "embeddableLaunchScript": false,
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "blueprints": []
+  },
+  "entities": [
+    "StoreInfo",
+    "Address"
+  ]
+}

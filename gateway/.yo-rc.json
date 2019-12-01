@@ -1,0 +1,53 @@
+{
+  "generator-jhipster": {
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "enableHibernateCache": true,
+    "enableSwaggerCodegen": false,
+    "enableTranslation": true,
+    "jhiPrefix": "jhi",
+    "languages": [
+      "en",
+      "fr"
+    ],
+    "messageBroker": false,
+    "nativeLanguage": "en",
+    "packageName": "com.invillia.gateway",
+    "packageFolder": "com/invillia/gateway",
+    "prodDatabaseType": "mariadb",
+    "searchEngine": false,
+    "serviceDiscoveryType": "eureka",
+    "skipClient": true,
+    "skipServer": false,
+    "testFrameworks": [
+      "protractor"
+    ],
+    "websocket": false,
+    "baseName": "gateway",
+    "applicationType": "gateway",
+    "authenticationType": "jwt",
+    "cacheProvider": "hazelcast",
+    "jhipsterVersion": "6.5.1",
+    "buildTool": "maven",
+    "skipUserManagement": false,
+    "clientPackageManager": "npm",
+    "serverPort": "8080",
+    "clientFramework": "angularX",
+    "clientTheme": "none",
+    "clientThemeVariant": "",
+    "useSass": true,
+    "jwtSecretKey": "OGFhMWYxMzIyYzU5N2QyMmM3N2UwYmNjOWFhNGQ4OGNiMzA2NjAzY2VhNzlkNTU2YTQ3ZDQ0YTk5NWMwYzA2YTRlNDA0MTUwYjA4OTM5NGY4MWIwMzgxZGM3Mjg3MjYxNmNlNGUwMjExMjA4NDdhMGQ2MTlmMjhjZDhiYWMzYTA=",
+    "embeddableLaunchScript": false,
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "blueprints": []
+  },
+  "entities": [
+    "StoreInfo",
+    "OrderInfo",
+    "OrderItem",
+    "Payment",
+    "Address"
+  ]
+}

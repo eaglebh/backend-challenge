@@ -1,0 +1,11 @@
+id;status;credit_card_number;payment_date
+1;CANCELLED;Savings Account Dam;2019-11-29
+2;INCORRECT_DATA;Metal deposit;2019-11-29
+3;DONE;Money Market Account;2019-11-29
+4;NO_FUNDS;enable Gorgeous Frozen Pants;2019-11-29
+5;INCORRECT_DATA;Planner Canyon;2019-11-28
+6;PENDING;Usability South Dakota envisioneer;2019-11-29
+7;INCORRECT_DATA;Bahamian Dollar Investment Account;2019-11-28
+8;INCORRECT_DATA;Tuna;2019-11-28
+9;INCORRECT_DATA;Georgia Industrial;2019-11-28
+10;CANCELLED;archive Georgia Aruba;2019-11-28

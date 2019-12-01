@@ -1,0 +1,44 @@
+{
+  "generator-jhipster": {
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "enableHibernateCache": true,
+    "enableSwaggerCodegen": false,
+    "enableTranslation": true,
+    "jhiPrefix": "jhi",
+    "languages": [
+      "en",
+      "fr"
+    ],
+    "messageBroker": false,
+    "nativeLanguage": "en",
+    "packageName": "com.invillia.order",
+    "packageFolder": "com/invillia/order",
+    "prodDatabaseType": "mariadb",
+    "searchEngine": false,
+    "serviceDiscoveryType": "eureka",
+    "skipClient": true,
+    "testFrameworks": [],
+    "websocket": false,
+    "baseName": "order",
+    "applicationType": "microservice",
+    "authenticationType": "jwt",
+    "serverPort": "8082",
+    "skipUserManagement": true,
+    "jhipsterVersion": "6.5.1",
+    "buildTool": "maven",
+    "clientPackageManager": "npm",
+    "cacheProvider": "hazelcast",
+    "jwtSecretKey": "MTMwNTZlYjVhYzlhMmRmYWYxMDQxNzU4M2Q3ZDVmMDNiOTA5NDBhNDQ5MTIzZTBlZWY4YTFmNTE4NWM5NTk2NDA1MjMxMjViZGY1N2M3MGMzOGVlMmQ3Zjk5MjA0NTM5MDhiYTEwYzZmYTQ1NzkyMjJjMjM3ZmEwNWEyOTZjMzE=",
+    "embeddableLaunchScript": false,
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "blueprints": []
+  },
+  "entities": [
+    "OrderInfo",
+    "OrderItem",
+    "Address"
+  ]
+}

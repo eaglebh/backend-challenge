@@ -1,0 +1,33 @@
+{
+    "name": "Payment",
+    "fields": [
+        {
+            "fieldName": "status",
+            "fieldType": "PaymentStatus",
+            "fieldValues": "PENDING,INCORRECT_DATA,NO_FUNDS,CANCELLED,DONE"
+        },
+        {
+            "fieldName": "creditCardNumber",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "paymentDate",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "relationships": [],
+    "changelogDate": "20191129155023",
+    "entityTableName": "payment",
+    "dto": "no",
+    "pagination": "no",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": [
+        "gateway",
+        "payment"
+    ],
+    "microserviceName": "payment"
+}

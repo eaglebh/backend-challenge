@@ -1,0 +1,38 @@
+{
+    "name": "OrderInfo",
+    "fields": [
+        {
+            "fieldName": "confirmationDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "OrderStatus",
+            "fieldValues": "NEW,PROCESSING,PENDING_PAYMENT,ON_HOLD,PAYMENT_REVIEW,COMPLETE,CANCELLED"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "address",
+            "otherEntityRelationshipName": "orderInfo",
+            "relationshipName": "address",
+            "otherEntityField": "id",
+            "ownerSide": true
+        }
+    ],
+    "changelogDate": "20191129155019",
+    "entityTableName": "order_info",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": [
+        "gateway",
+        "order"
+    ],
+    "microserviceName": "order"
+}

@@ -1,0 +1,42 @@
+{
+  "generator-jhipster": {
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "enableHibernateCache": true,
+    "enableSwaggerCodegen": false,
+    "enableTranslation": true,
+    "jhiPrefix": "jhi",
+    "languages": [
+      "en",
+      "fr"
+    ],
+    "messageBroker": false,
+    "nativeLanguage": "en",
+    "packageName": "com.invillia.payment",
+    "packageFolder": "com/invillia/payment",
+    "prodDatabaseType": "mariadb",
+    "searchEngine": false,
+    "serviceDiscoveryType": "eureka",
+    "skipClient": true,
+    "testFrameworks": [],
+    "websocket": false,
+    "baseName": "payment",
+    "applicationType": "microservice",
+    "authenticationType": "jwt",
+    "serverPort": "8083",
+    "skipUserManagement": true,
+    "jhipsterVersion": "6.5.1",
+    "buildTool": "maven",
+    "clientPackageManager": "npm",
+    "cacheProvider": "hazelcast",
+    "jwtSecretKey": "MmI3NzdkOWE2MDc4NTViNWUwM2NhYmI5MjAyMzQxMTM4MjJjMDBlZDA4ZDRhYmU0OTNmNTIxNWZmNTdhZDFjYTFjMzA2YjU0YzQ2N2YwNmUzYTM5YTVkN2EwMmI4OTE1YjU4ZGE4MGQ1NjRlY2Y5NDUxNjMxYmFjODA5MDIxNTc=",
+    "embeddableLaunchScript": false,
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "blueprints": []
+  },
+  "entities": [
+    "Payment"
+  ]
+}
