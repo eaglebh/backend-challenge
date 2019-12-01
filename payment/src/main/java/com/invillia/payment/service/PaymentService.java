@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Service Implementation for managing {@link Payment}.
@@ -56,7 +57,7 @@ public class PaymentService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Payment> findOne(Long id) {
+    public Optional<Payment> findOne(UUID id) {
         log.debug("Request to get Payment : {}", id);
         return paymentRepository.findById(id);
     }
@@ -66,7 +67,7 @@ public class PaymentService {
      *
      * @param id the id of the entity.
      */
-    public void delete(Long id) {
+    public void delete(UUID id) {
         log.debug("Request to delete Payment : {}", id);
         paymentRepository.deleteById(id);
     }

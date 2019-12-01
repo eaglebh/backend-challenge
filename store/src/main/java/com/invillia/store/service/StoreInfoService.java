@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Service Implementation for managing {@link StoreInfo}.
@@ -58,7 +59,7 @@ public class StoreInfoService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<StoreInfo> findOne(Long id) {
+    public Optional<StoreInfo> findOne(UUID id) {
         log.debug("Request to get StoreInfo : {}", id);
         return storeInfoRepository.findById(id);
     }
@@ -68,7 +69,7 @@ public class StoreInfoService {
      *
      * @param id the id of the entity.
      */
-    public void delete(Long id) {
+    public void delete(UUID id) {
         log.debug("Request to delete StoreInfo : {}", id);
         storeInfoRepository.deleteById(id);
     }

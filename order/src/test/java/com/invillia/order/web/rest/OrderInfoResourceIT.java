@@ -148,7 +148,7 @@ public class OrderInfoResourceIT {
         int databaseSizeBeforeCreate = orderInfoRepository.findAll().size();
 
         // Create the OrderInfo with an existing ID
-        orderInfo.setId(1L);
+        orderInfo.setId(UUID.randomUUID());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restOrderInfoMockMvc.perform(post("/api/order-infos")
@@ -172,13 +172,13 @@ public class OrderInfoResourceIT {
         restOrderInfoMockMvc.perform(get("/api/order-infos?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(orderInfo.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(orderInfo.getId().toString())))
             .andExpect(jsonPath("$.[*].confirmationDate").value(hasItem(DEFAULT_CONFIRMATION_DATE.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].storeId").value(hasItem(DEFAULT_STORE_ID.toString())))
             .andExpect(jsonPath("$.[*].paymentId").value(hasItem(DEFAULT_PAYMENT_ID.toString())));
     }
-    
+
     @Test
     @Transactional
     public void getOrderInfo() throws Exception {
@@ -189,7 +189,7 @@ public class OrderInfoResourceIT {
         restOrderInfoMockMvc.perform(get("/api/order-infos/{id}", orderInfo.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(orderInfo.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(orderInfo.getId().toString()))
             .andExpect(jsonPath("$.confirmationDate").value(DEFAULT_CONFIRMATION_DATE.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.storeId").value(DEFAULT_STORE_ID.toString()))
@@ -200,7 +200,7 @@ public class OrderInfoResourceIT {
     @Transactional
     public void getNonExistingOrderInfo() throws Exception {
         // Get the orderInfo
-        restOrderInfoMockMvc.perform(get("/api/order-infos/{id}", Long.MAX_VALUE))
+        restOrderInfoMockMvc.perform(get("/api/order-infos/{id}", UUID.randomUUID()))
             .andExpect(status().isNotFound());
     }
 

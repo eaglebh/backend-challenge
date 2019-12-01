@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * REST controller for managing {@link com.invillia.order.domain.OrderItem}.
@@ -107,7 +108,7 @@ public class OrderItemResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the orderItem, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/order-items/{id}")
-    public ResponseEntity<OrderItem> getOrderItem(@PathVariable Long id) {
+    public ResponseEntity<OrderItem> getOrderItem(@PathVariable UUID id) {
         log.debug("REST request to get OrderItem : {}", id);
         Optional<OrderItem> orderItem = orderItemService.findOne(id);
         return ResponseUtil.wrapOrNotFound(orderItem);
@@ -120,7 +121,7 @@ public class OrderItemResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/order-items/{id}")
-    public ResponseEntity<Void> deleteOrderItem(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteOrderItem(@PathVariable UUID id) {
         log.debug("REST request to delete OrderItem : {}", id);
         orderItemService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();

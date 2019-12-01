@@ -13,7 +13,7 @@
     -->
     <changeSet id="20191129155019-1" author="jhipster">
         <createTable tableName="order_info">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="${uuidType}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="confirmation_date" type="date">
@@ -28,7 +28,7 @@
             <column name="payment_id" type="${uuidType}">
                 <constraints nullable="true" />
             </column>
-            <column name="address_id" type="bigint">
+            <column name="address_id" type="${uuidType}">
                 <constraints unique="true" nullable="true" uniqueConstraintName="ux_order_info_address_id" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
@@ -53,7 +53,7 @@
                   file="config/liquibase/fake-data/order_info.csv"
                   separator=";"
                   tableName="order_info">
-            <column name="id" type="numeric"/>
+            <column name="id" type="string"/>
             <column name="confirmation_date" type="date"/>
             <column name="status" type="string"/>
             <column name="store_id" type="string"/>

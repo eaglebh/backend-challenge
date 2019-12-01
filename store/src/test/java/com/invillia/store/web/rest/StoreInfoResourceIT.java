@@ -21,6 +21,7 @@ import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.UUID;
 
 import static com.invillia.store.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -126,7 +127,7 @@ public class StoreInfoResourceIT {
         int databaseSizeBeforeCreate = storeInfoRepository.findAll().size();
 
         // Create the StoreInfo with an existing ID
-        storeInfo.setId(1L);
+        storeInfo.setId(UUID.randomUUID());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restStoreInfoMockMvc.perform(post("/api/store-infos")
@@ -168,10 +169,10 @@ public class StoreInfoResourceIT {
         restStoreInfoMockMvc.perform(get("/api/store-infos?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(storeInfo.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(storeInfo.getId().toString())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
-    
+
     @Test
     @Transactional
     public void getStoreInfo() throws Exception {
@@ -182,7 +183,7 @@ public class StoreInfoResourceIT {
         restStoreInfoMockMvc.perform(get("/api/store-infos/{id}", storeInfo.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(storeInfo.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(storeInfo.getId().toString()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME));
     }
 
@@ -190,7 +191,7 @@ public class StoreInfoResourceIT {
     @Transactional
     public void getNonExistingStoreInfo() throws Exception {
         // Get the storeInfo
-        restStoreInfoMockMvc.perform(get("/api/store-infos/{id}", Long.MAX_VALUE))
+        restStoreInfoMockMvc.perform(get("/api/store-infos/{id}", UUID.randomUUID()))
             .andExpect(status().isNotFound());
     }
 

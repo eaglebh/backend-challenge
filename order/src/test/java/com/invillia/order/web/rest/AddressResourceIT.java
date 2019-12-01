@@ -21,6 +21,7 @@ import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.UUID;
 
 import static com.invillia.order.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -150,7 +151,7 @@ public class AddressResourceIT {
         int databaseSizeBeforeCreate = addressRepository.findAll().size();
 
         // Create the Address with an existing ID
-        address.setId(1L);
+        address.setId(UUID.randomUUID());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restAddressMockMvc.perform(post("/api/addresses")
@@ -174,14 +175,14 @@ public class AddressResourceIT {
         restAddressMockMvc.perform(get("/api/addresses?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(address.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(address.getId().toString())))
             .andExpect(jsonPath("$.[*].streetAddress").value(hasItem(DEFAULT_STREET_ADDRESS)))
             .andExpect(jsonPath("$.[*].postalCode").value(hasItem(DEFAULT_POSTAL_CODE)))
             .andExpect(jsonPath("$.[*].city").value(hasItem(DEFAULT_CITY)))
             .andExpect(jsonPath("$.[*].stateProvince").value(hasItem(DEFAULT_STATE_PROVINCE)))
             .andExpect(jsonPath("$.[*].country").value(hasItem(DEFAULT_COUNTRY)));
     }
-    
+
     @Test
     @Transactional
     public void getAddress() throws Exception {
@@ -192,7 +193,7 @@ public class AddressResourceIT {
         restAddressMockMvc.perform(get("/api/addresses/{id}", address.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(address.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(address.getId().toString()))
             .andExpect(jsonPath("$.streetAddress").value(DEFAULT_STREET_ADDRESS))
             .andExpect(jsonPath("$.postalCode").value(DEFAULT_POSTAL_CODE))
             .andExpect(jsonPath("$.city").value(DEFAULT_CITY))
@@ -204,7 +205,7 @@ public class AddressResourceIT {
     @Transactional
     public void getNonExistingAddress() throws Exception {
         // Get the address
-        restAddressMockMvc.perform(get("/api/addresses/{id}", Long.MAX_VALUE))
+        restAddressMockMvc.perform(get("/api/addresses/{id}", UUID.randomUUID()))
             .andExpect(status().isNotFound());
     }
 

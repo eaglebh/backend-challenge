@@ -148,7 +148,7 @@ public class PaymentResourceIT {
         int databaseSizeBeforeCreate = paymentRepository.findAll().size();
 
         // Create the Payment with an existing ID
-        payment.setId(1L);
+        payment.setId(UUID.randomUUID());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restPaymentMockMvc.perform(post("/api/payments")
@@ -172,13 +172,13 @@ public class PaymentResourceIT {
         restPaymentMockMvc.perform(get("/api/payments?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(payment.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(payment.getId().toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].creditCardNumber").value(hasItem(DEFAULT_CREDIT_CARD_NUMBER)))
             .andExpect(jsonPath("$.[*].paymentDate").value(hasItem(DEFAULT_PAYMENT_DATE.toString())))
             .andExpect(jsonPath("$.[*].orderId").value(hasItem(DEFAULT_ORDER_ID.toString())));
     }
-    
+
     @Test
     @Transactional
     public void getPayment() throws Exception {
@@ -189,7 +189,7 @@ public class PaymentResourceIT {
         restPaymentMockMvc.perform(get("/api/payments/{id}", payment.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(payment.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(payment.getId().toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.creditCardNumber").value(DEFAULT_CREDIT_CARD_NUMBER))
             .andExpect(jsonPath("$.paymentDate").value(DEFAULT_PAYMENT_DATE.toString()))
@@ -200,7 +200,7 @@ public class PaymentResourceIT {
     @Transactional
     public void getNonExistingPayment() throws Exception {
         // Get the payment
-        restPaymentMockMvc.perform(get("/api/payments/{id}", Long.MAX_VALUE))
+        restPaymentMockMvc.perform(get("/api/payments/{id}", UUID.randomUUID()))
             .andExpect(status().isNotFound());
     }
 

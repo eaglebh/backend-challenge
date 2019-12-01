@@ -13,7 +13,7 @@
     -->
     <changeSet id="20191129155023-1" author="jhipster">
         <createTable tableName="payment">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="${uuidType}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="status" type="varchar(255)">
@@ -50,7 +50,7 @@
                   file="config/liquibase/fake-data/payment.csv"
                   separator=";"
                   tableName="payment">
-            <column name="id" type="numeric"/>
+            <column name="id" type="string"/>
             <column name="status" type="string"/>
             <column name="credit_card_number" type="string"/>
             <column name="payment_date" type="date"/>

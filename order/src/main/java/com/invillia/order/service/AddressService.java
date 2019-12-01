@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Service Implementation for managing {@link Address}.
@@ -56,7 +57,7 @@ public class AddressService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Address> findOne(Long id) {
+    public Optional<Address> findOne(UUID id) {
         log.debug("Request to get Address : {}", id);
         return addressRepository.findById(id);
     }
@@ -66,7 +67,7 @@ public class AddressService {
      *
      * @param id the id of the entity.
      */
-    public void delete(Long id) {
+    public void delete(UUID id) {
         log.debug("Request to delete Address : {}", id);
         addressRepository.deleteById(id);
     }

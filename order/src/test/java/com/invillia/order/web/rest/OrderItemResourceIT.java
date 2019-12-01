@@ -21,6 +21,7 @@ import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.UUID;
 
 import static com.invillia.order.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -126,7 +127,7 @@ public class OrderItemResourceIT {
         int databaseSizeBeforeCreate = orderItemRepository.findAll().size();
 
         // Create the OrderItem with an existing ID
-        orderItem.setId(1L);
+        orderItem.setId(UUID.randomUUID());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restOrderItemMockMvc.perform(post("/api/order-items")
@@ -150,10 +151,10 @@ public class OrderItemResourceIT {
         restOrderItemMockMvc.perform(get("/api/order-items?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(orderItem.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(orderItem.getId().toString())))
             .andExpect(jsonPath("$.[*].countryName").value(hasItem(DEFAULT_COUNTRY_NAME)));
     }
-    
+
     @Test
     @Transactional
     public void getOrderItem() throws Exception {
@@ -164,7 +165,7 @@ public class OrderItemResourceIT {
         restOrderItemMockMvc.perform(get("/api/order-items/{id}", orderItem.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(orderItem.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(orderItem.getId().toString()))
             .andExpect(jsonPath("$.countryName").value(DEFAULT_COUNTRY_NAME));
     }
 
@@ -172,7 +173,7 @@ public class OrderItemResourceIT {
     @Transactional
     public void getNonExistingOrderItem() throws Exception {
         // Get the orderItem
-        restOrderItemMockMvc.perform(get("/api/order-items/{id}", Long.MAX_VALUE))
+        restOrderItemMockMvc.perform(get("/api/order-items/{id}", UUID.randomUUID()))
             .andExpect(status().isNotFound());
     }
 

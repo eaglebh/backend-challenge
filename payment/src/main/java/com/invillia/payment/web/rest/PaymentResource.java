@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * REST controller for managing {@link com.invillia.payment.domain.Payment}.
@@ -97,7 +98,7 @@ public class PaymentResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the payment, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/payments/{id}")
-    public ResponseEntity<Payment> getPayment(@PathVariable Long id) {
+    public ResponseEntity<Payment> getPayment(@PathVariable UUID id) {
         log.debug("REST request to get Payment : {}", id);
         Optional<Payment> payment = paymentService.findOne(id);
         return ResponseUtil.wrapOrNotFound(payment);
@@ -110,7 +111,7 @@ public class PaymentResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/payments/{id}")
-    public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePayment(@PathVariable UUID id) {
         log.debug("REST request to delete Payment : {}", id);
         paymentService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();

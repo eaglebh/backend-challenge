@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * REST controller for managing {@link com.invillia.order.domain.Address}.
@@ -97,7 +98,7 @@ public class AddressResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the address, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/addresses/{id}")
-    public ResponseEntity<Address> getAddress(@PathVariable Long id) {
+    public ResponseEntity<Address> getAddress(@PathVariable UUID id) {
         log.debug("REST request to get Address : {}", id);
         Optional<Address> address = addressService.findOne(id);
         return ResponseUtil.wrapOrNotFound(address);
@@ -110,7 +111,7 @@ public class AddressResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/addresses/{id}")
-    public ResponseEntity<Void> deleteAddress(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAddress(@PathVariable UUID id) {
         log.debug("REST request to delete Address : {}", id);
         addressService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
