@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.UUID;
 
 import static com.invillia.order.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,6 +43,12 @@ public class OrderInfoResourceIT {
 
     private static final OrderStatus DEFAULT_STATUS = OrderStatus.NEW;
     private static final OrderStatus UPDATED_STATUS = OrderStatus.PROCESSING;
+
+    private static final UUID DEFAULT_STORE_ID = UUID.randomUUID();
+    private static final UUID UPDATED_STORE_ID = UUID.randomUUID();
+
+    private static final UUID DEFAULT_PAYMENT_ID = UUID.randomUUID();
+    private static final UUID UPDATED_PAYMENT_ID = UUID.randomUUID();
 
     @Autowired
     private OrderInfoRepository orderInfoRepository;
@@ -89,7 +96,9 @@ public class OrderInfoResourceIT {
     public static OrderInfo createEntity(EntityManager em) {
         OrderInfo orderInfo = new OrderInfo()
             .confirmationDate(DEFAULT_CONFIRMATION_DATE)
-            .status(DEFAULT_STATUS);
+            .status(DEFAULT_STATUS)
+            .storeId(DEFAULT_STORE_ID)
+            .paymentId(DEFAULT_PAYMENT_ID);
         return orderInfo;
     }
     /**
@@ -101,7 +110,9 @@ public class OrderInfoResourceIT {
     public static OrderInfo createUpdatedEntity(EntityManager em) {
         OrderInfo orderInfo = new OrderInfo()
             .confirmationDate(UPDATED_CONFIRMATION_DATE)
-            .status(UPDATED_STATUS);
+            .status(UPDATED_STATUS)
+            .storeId(UPDATED_STORE_ID)
+            .paymentId(UPDATED_PAYMENT_ID);
         return orderInfo;
     }
 
@@ -127,6 +138,8 @@ public class OrderInfoResourceIT {
         OrderInfo testOrderInfo = orderInfoList.get(orderInfoList.size() - 1);
         assertThat(testOrderInfo.getConfirmationDate()).isEqualTo(DEFAULT_CONFIRMATION_DATE);
         assertThat(testOrderInfo.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testOrderInfo.getStoreId()).isEqualTo(DEFAULT_STORE_ID);
+        assertThat(testOrderInfo.getPaymentId()).isEqualTo(DEFAULT_PAYMENT_ID);
     }
 
     @Test
@@ -161,7 +174,9 @@ public class OrderInfoResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(orderInfo.getId().intValue())))
             .andExpect(jsonPath("$.[*].confirmationDate").value(hasItem(DEFAULT_CONFIRMATION_DATE.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].storeId").value(hasItem(DEFAULT_STORE_ID.toString())))
+            .andExpect(jsonPath("$.[*].paymentId").value(hasItem(DEFAULT_PAYMENT_ID.toString())));
     }
     
     @Test
@@ -176,7 +191,9 @@ public class OrderInfoResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(orderInfo.getId().intValue()))
             .andExpect(jsonPath("$.confirmationDate").value(DEFAULT_CONFIRMATION_DATE.toString()))
-            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
+            .andExpect(jsonPath("$.storeId").value(DEFAULT_STORE_ID.toString()))
+            .andExpect(jsonPath("$.paymentId").value(DEFAULT_PAYMENT_ID.toString()));
     }
 
     @Test
@@ -201,7 +218,9 @@ public class OrderInfoResourceIT {
         em.detach(updatedOrderInfo);
         updatedOrderInfo
             .confirmationDate(UPDATED_CONFIRMATION_DATE)
-            .status(UPDATED_STATUS);
+            .status(UPDATED_STATUS)
+            .storeId(UPDATED_STORE_ID)
+            .paymentId(UPDATED_PAYMENT_ID);
 
         restOrderInfoMockMvc.perform(put("/api/order-infos")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -214,6 +233,8 @@ public class OrderInfoResourceIT {
         OrderInfo testOrderInfo = orderInfoList.get(orderInfoList.size() - 1);
         assertThat(testOrderInfo.getConfirmationDate()).isEqualTo(UPDATED_CONFIRMATION_DATE);
         assertThat(testOrderInfo.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testOrderInfo.getStoreId()).isEqualTo(UPDATED_STORE_ID);
+        assertThat(testOrderInfo.getPaymentId()).isEqualTo(UPDATED_PAYMENT_ID);
     }
 
     @Test

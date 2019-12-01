@@ -6,7 +6,15 @@
             "fieldType": "String"
         }
     ],
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "orderInfo",
+            "otherEntityRelationshipName": "item",
+            "relationshipName": "order",
+            "otherEntityField": "id"
+        }
+    ],
     "changelogDate": "20191129155020",
     "entityTableName": "order_item",
     "dto": "no",

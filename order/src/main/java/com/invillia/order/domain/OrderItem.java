@@ -1,4 +1,5 @@
 package com.invillia.order.domain;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -23,6 +24,10 @@ public class OrderItem implements Serializable {
     @Column(name = "country_name")
     private String countryName;
 
+    @ManyToOne
+    @JsonIgnoreProperties("items")
+    private OrderInfo order;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -43,6 +48,19 @@ public class OrderItem implements Serializable {
 
     public void setCountryName(String countryName) {
         this.countryName = countryName;
+    }
+
+    public OrderInfo getOrder() {
+        return order;
+    }
+
+    public OrderItem order(OrderInfo orderInfo) {
+        this.order = orderInfo;
+        return this;
+    }
+
+    public void setOrder(OrderInfo orderInfo) {
+        this.order = orderInfo;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

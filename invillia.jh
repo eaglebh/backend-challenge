@@ -59,6 +59,8 @@ application {
 entity OrderInfo {
   confirmationDate LocalDate
   status OrderStatus
+  storeId UUID
+  paymentId UUID
 }
 
 entity OrderItem {
@@ -92,13 +94,14 @@ enum PaymentStatus {
 }
 
 relationship OneToOne {
-  StoreInfo{address} to Address , OrderInfo{address} to Address
+  StoreInfo{address} to Address,
+  OrderInfo{address} to Address
 }
 
-//relationship OneToMany {
+relationship OneToMany {
 //	Store{order} to Order,
-//	Order{item} to OrderItem
-//}
+	OrderInfo{item} to OrderItem{order}
+}
 
 service StoreInfo, OrderInfo, OrderItem, Address, Payment with serviceClass
 

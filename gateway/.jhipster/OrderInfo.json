@@ -9,6 +9,14 @@
             "fieldName": "status",
             "fieldType": "OrderStatus",
             "fieldValues": "NEW,PROCESSING,PENDING_PAYMENT,ON_HOLD,PAYMENT_REVIEW,COMPLETE,CANCELLED"
+        },
+        {
+            "fieldName": "storeId",
+            "fieldType": "UUID"
+        },
+        {
+            "fieldName": "paymentId",
+            "fieldType": "UUID"
         }
     ],
     "relationships": [
@@ -19,6 +27,12 @@
             "relationshipName": "address",
             "otherEntityField": "id",
             "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "orderItem",
+            "otherEntityRelationshipName": "order",
+            "relationshipName": "item"
         }
     ],
     "changelogDate": "20191129155019",
