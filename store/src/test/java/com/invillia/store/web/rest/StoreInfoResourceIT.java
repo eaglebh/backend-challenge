@@ -124,10 +124,11 @@ public class StoreInfoResourceIT {
     @Test
     @Transactional
     public void createStoreInfoWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = storeInfoRepository.findAll().size();
+        List<StoreInfo> storeInfoListBeforeCreate = storeInfoRepository.findAll();
+        int databaseSizeBeforeCreate = storeInfoListBeforeCreate.size();
 
         // Create the StoreInfo with an existing ID
-        storeInfo.setId(UUID.randomUUID());
+        storeInfo.setId(storeInfoListBeforeCreate.get(0).getId());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restStoreInfoMockMvc.perform(post("/api/store-infos")
@@ -227,7 +228,7 @@ public class StoreInfoResourceIT {
     public void updateNonExistingStoreInfo() throws Exception {
         int databaseSizeBeforeUpdate = storeInfoRepository.findAll().size();
 
-        // Create the StoreInfo
+        // Create the StoreInfo # not actually
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restStoreInfoMockMvc.perform(put("/api/store-infos")

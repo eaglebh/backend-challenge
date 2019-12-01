@@ -23,6 +23,8 @@ public class OrderInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private static final int MAX_REFUND_DAYS = 10;
+
     @Id
     @Type(type = "uuid-char")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -150,6 +152,10 @@ public class OrderInfo implements Serializable {
         this.items = orderItems;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+
+    public static int getMaxRefundDays() {
+        return MAX_REFUND_DAYS;
+    }
 
     @Override
     public boolean equals(Object o) {

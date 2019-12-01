@@ -242,7 +242,7 @@ public class OrderItemResourceIT {
     public void updateNonExistingOrderItem() throws Exception {
         int databaseSizeBeforeUpdate = orderItemRepository.findAll().size();
 
-        // Create the OrderItem
+        // Create the OrderItem # not actually
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restOrderItemMockMvc.perform(put("/api/order-items")

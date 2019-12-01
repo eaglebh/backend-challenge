@@ -145,10 +145,11 @@ public class OrderInfoResourceIT {
     @Test
     @Transactional
     public void createOrderInfoWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = orderInfoRepository.findAll().size();
+        List<OrderInfo> orderInfoListBeforeCreate = orderInfoRepository.findAll();
+        int databaseSizeBeforeCreate = orderInfoListBeforeCreate.size();
 
         // Create the OrderInfo with an existing ID
-        orderInfo.setId(UUID.randomUUID());
+        orderInfo.setId(orderInfoListBeforeCreate.get(0).getId());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restOrderInfoMockMvc.perform(post("/api/order-infos")
@@ -242,7 +243,7 @@ public class OrderInfoResourceIT {
     public void updateNonExistingOrderInfo() throws Exception {
         int databaseSizeBeforeUpdate = orderInfoRepository.findAll().size();
 
-        // Create the OrderInfo
+        // Create the OrderInfo # not actually
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restOrderInfoMockMvc.perform(put("/api/order-infos")

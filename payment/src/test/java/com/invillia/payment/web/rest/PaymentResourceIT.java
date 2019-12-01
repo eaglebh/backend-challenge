@@ -145,10 +145,11 @@ public class PaymentResourceIT {
     @Test
     @Transactional
     public void createPaymentWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = paymentRepository.findAll().size();
+        List<Payment> paymentListBeforeCreate = paymentRepository.findAll();
+        int databaseSizeBeforeCreate = paymentListBeforeCreate.size();
 
         // Create the Payment with an existing ID
-        payment.setId(UUID.randomUUID());
+        payment.setId(paymentListBeforeCreate.get(0).getId());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restPaymentMockMvc.perform(post("/api/payments")
@@ -242,7 +243,7 @@ public class PaymentResourceIT {
     public void updateNonExistingPayment() throws Exception {
         int databaseSizeBeforeUpdate = paymentRepository.findAll().size();
 
-        // Create the Payment
+        // Create the Payment # not actually
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPaymentMockMvc.perform(put("/api/payments")

@@ -148,10 +148,11 @@ public class AddressResourceIT {
     @Test
     @Transactional
     public void createAddressWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = addressRepository.findAll().size();
+        List<Address> addressListBeforeCreate = addressRepository.findAll();
+        int databaseSizeBeforeCreate = addressListBeforeCreate.size();
 
         // Create the Address with an existing ID
-        address.setId(UUID.randomUUID());
+        address.setId(addressListBeforeCreate.get(0).getId());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restAddressMockMvc.perform(post("/api/addresses")
@@ -249,7 +250,7 @@ public class AddressResourceIT {
     public void updateNonExistingAddress() throws Exception {
         int databaseSizeBeforeUpdate = addressRepository.findAll().size();
 
-        // Create the Address
+        // Create the Address # not actually
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restAddressMockMvc.perform(put("/api/addresses")
