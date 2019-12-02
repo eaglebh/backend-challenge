@@ -127,7 +127,7 @@ public class OrderInfoResource {
     }
 
     /**
-     * {@code PUT  /order-infos/refund} : Refunds an existing orderInfo.
+     * {@code PUT  /order-infos/refund/:id} : Refunds an existing orderInfo.
      *
      * @param id the id of the orderInfo to refund.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated orderInfo,

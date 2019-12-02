@@ -79,8 +79,7 @@ public class OrderInfoService {
         Optional<OrderInfo> orderInfo = orderInfoRepository.findById(id);
         if (orderInfo.isPresent()) {
             OrderInfo currentOrderInfo = orderInfo.get();
-            LocalDate expirationDate = LocalDate.now().minusDays(OrderInfo.getMaxRefundDays() + 1);
-            if (currentOrderInfo.getConfirmationDate().isAfter(expirationDate)) {
+            if (currentOrderInfo.isCancellable()) {
                 currentOrderInfo.setStatus(OrderStatus.PENDING_CANCEL);
                 // @TODO implement paymentApiClient properly
             } else {

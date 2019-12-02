@@ -282,6 +282,7 @@ public class OrderInfoResourceIT {
     public void noRefundOrderAfterMaxRefundDays() throws Exception {
         // Initialize the database
         orderInfo.setConfirmationDate(LocalDate.now().minusDays(OrderInfo.getMaxRefundDays()+1));
+        orderInfo.setStatus(OrderStatus.COMPLETE);
         orderInfoRepository.saveAndFlush(orderInfo);
         em.detach(orderInfo);
 
@@ -304,6 +305,7 @@ public class OrderInfoResourceIT {
     public void refundOrderBeforeMaxRefundDays() throws Exception {
         // Initialize the database
         orderInfo.setConfirmationDate(LocalDate.now().minusDays(OrderInfo.getMaxRefundDays()));
+        orderInfo.setStatus(OrderStatus.COMPLETE);
         orderInfoRepository.saveAndFlush(orderInfo);
         em.detach(orderInfo);
 

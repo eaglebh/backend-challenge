@@ -157,6 +157,12 @@ public class OrderInfo implements Serializable {
         return MAX_REFUND_DAYS;
     }
 
+    public boolean isCancellable() {
+        LocalDate expirationDate = LocalDate.now().minusDays(OrderInfo.getMaxRefundDays() + 1);
+        return this.getConfirmationDate().isAfter(expirationDate) &&
+            this.getStatus().equals(OrderStatus.COMPLETE);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
