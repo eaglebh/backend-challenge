@@ -44,10 +44,34 @@ The process should be closest possible to "real-time", balancing your choices in
 scalability.
 
 ## Nice to have features (describe or implement):
-* Asynchronous processing
-* Database
-* Docker
-* AWS
-* Security
-* Swagger
-* Clean Code
+* Asynchronous processing - Should be implemented using Kafka for message queues. 
+    The idea is to make the dependency between Order and Payment microservices as decoupled
+    as possible. The payments are processed by the Payment microservice, and it may signal by
+    messaging kafka topic related to payments updates. The Order microservice may listen to the payments
+    updates topic and update the status of the Order to reflect payment status for the orders.
+* Database - In this implementation MariaDB was used for each microservice, but it may be better to use some NoSQL database depending on other requirements. Also, it may be necessary to restructure the microservices to put together the ones that requires microservices calling each other frequently, if that happens with some requirements changes.
+* Docker - In this implementation docker is being used with docker-compose configuration to make sure all of the dependencies are up when necessary. There is a configuration (JHIPSTER_SLEEP) that sets to 120 seconds the wait time for the spring boot applications to start, making sure the environment is ready.
+* AWS - AWS should be used to deploy the current configuration, or even change it to use EKS providing a kubernetes configuration that allows scalability. Other AWS services that should be used are: RDS instead of pure MariaDB instances,  Amazon Kinesis for the payment processing using messaging streams.
+* Security - The project was configured to use JWT, but should be setup to use Oauth2 or even a provider like Okra.
+* Swagger - The project uses swagger for proper API documentation, it can be accessed at the Jhipster Registry page from the administration menu->API.
+* Clean Code - There's some refactoring that should be made to make sure we have more separation of concernes and a cleaner code base.
+
+## Instructions to build and run the system
+To build the system use the following command on the root of the project:
+```bash
+$ ./mvnw -Pprod verify jib:dockerBuild
+```
+
+To run it using docker:
+```bash
+$ cd docker-compose
+$ docker-compose up -d
+```
+
+To check and follow logs:
+```bash
+$ docker-compose logs -f
+```
+
+## TODOs
+* The cancellation/refund call between the Order microservice and the Payment microservice was not properly implemented. It should use some async implementation as messaging queues for example or an async REST call.
