@@ -1,15 +1,16 @@
 package com.invillia.order.service;
 
 import com.invillia.order.domain.OrderInfo;
+import com.invillia.order.domain.enumeration.OrderStatus;
 import com.invillia.order.repository.OrderInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -72,5 +73,20 @@ public class OrderInfoService {
     public void delete(UUID id) {
         log.debug("Request to delete OrderInfo : {}", id);
         orderInfoRepository.deleteById(id);
+    }
+
+    public Optional<OrderInfo> refund(UUID id) throws NonRefundableException {
+        Optional<OrderInfo> orderInfo = orderInfoRepository.findById(id);
+        if (orderInfo.isPresent()) {
+            OrderInfo currentOrderInfo = orderInfo.get();
+            LocalDate expirationDate = LocalDate.now().minusDays(OrderInfo.getMaxRefundDays() + 1);
+            if (currentOrderInfo.getConfirmationDate().isAfter(expirationDate)) {
+                currentOrderInfo.setStatus(OrderStatus.PENDING_CANCEL);
+                // @TODO implement paymentApiClient properly
+            } else {
+                throw new NonRefundableException("Non refundable after expiration");
+            }
+        }
+        return orderInfo;
     }
 }

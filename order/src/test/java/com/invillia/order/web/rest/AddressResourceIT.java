@@ -148,6 +148,8 @@ public class AddressResourceIT {
     @Test
     @Transactional
     public void createAddressWithExistingId() throws Exception {
+        // Create Address
+        addressRepository.saveAndFlush(address);
         List<Address> addressListBeforeCreate = addressRepository.findAll();
         int databaseSizeBeforeCreate = addressListBeforeCreate.size();
 

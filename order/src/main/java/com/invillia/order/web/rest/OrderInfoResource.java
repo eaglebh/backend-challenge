@@ -1,9 +1,10 @@
 package com.invillia.order.web.rest;
 
 import com.invillia.order.domain.OrderInfo;
+import com.invillia.order.service.NonRefundableException;
 import com.invillia.order.service.OrderInfoService;
 import com.invillia.order.web.rest.errors.BadRequestAlertException;
-
+import com.invillia.order.web.rest.errors.NonRefundableAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -13,14 +14,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -125,5 +124,31 @@ public class OrderInfoResource {
         log.debug("REST request to delete OrderInfo : {}", id);
         orderInfoService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     * {@code PUT  /order-infos/refund} : Refunds an existing orderInfo.
+     *
+     * @param id the id of the orderInfo to refund.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated orderInfo,
+     * or with status {@code 400 (Bad Request)} if the orderInfo is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the orderInfo couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping("/order-infos/refund/{id}")
+    public ResponseEntity<OrderInfo> refundOrderInfo(@PathVariable UUID id) throws URISyntaxException {
+        log.debug("REST request to refund OrderInfo : {}", id);
+        if (id == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+
+        Optional<OrderInfo> result;
+        try {
+            result = orderInfoService.refund(id);
+        } catch (NonRefundableException ex) {
+            throw new NonRefundableAlertException(ex.getMessage(), ENTITY_NAME, "refundexpired");
+        }
+        return ResponseUtil.wrapOrNotFound(result, HeaderUtil.createEntityUpdateAlert(
+            applicationName, true, ENTITY_NAME, id.toString()));
     }
 }

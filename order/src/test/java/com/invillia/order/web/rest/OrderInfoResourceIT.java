@@ -145,6 +145,9 @@ public class OrderInfoResourceIT {
     @Test
     @Transactional
     public void createOrderInfoWithExistingId() throws Exception {
+        // Initialize the database
+        orderInfoRepository.saveAndFlush(orderInfo);
+
         List<OrderInfo> orderInfoListBeforeCreate = orderInfoRepository.findAll();
         int databaseSizeBeforeCreate = orderInfoListBeforeCreate.size();
 
@@ -272,5 +275,45 @@ public class OrderInfoResourceIT {
         // Validate the database contains one less item
         List<OrderInfo> orderInfoList = orderInfoRepository.findAll();
         assertThat(orderInfoList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    public void noRefundOrderAfterMaxRefundDays() throws Exception {
+        // Initialize the database
+        orderInfo.setConfirmationDate(LocalDate.now().minusDays(OrderInfo.getMaxRefundDays()+1));
+        orderInfoRepository.saveAndFlush(orderInfo);
+        em.detach(orderInfo);
+
+        int databaseSizeBeforeUpdate = orderInfoRepository.findAll().size();
+
+        // Update the orderInfo
+        restOrderInfoMockMvc.perform(put("/api/order-infos/refund/{id}", orderInfo.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isPreconditionFailed());
+
+        // Validate the OrderInfo in the database
+        List<OrderInfo> orderInfoList = orderInfoRepository.findAll();
+        assertThat(orderInfoList).hasSize(databaseSizeBeforeUpdate);
+        OrderInfo testOrderInfo = orderInfoList.get(orderInfoList.size() - 1);
+        assertThat(testOrderInfo.getStatus()).isEqualTo(orderInfo.getStatus());
+    }
+
+    @Test
+    @Transactional
+    public void refundOrderBeforeMaxRefundDays() throws Exception {
+        // Initialize the database
+        orderInfo.setConfirmationDate(LocalDate.now().minusDays(OrderInfo.getMaxRefundDays()));
+        orderInfoRepository.saveAndFlush(orderInfo);
+        em.detach(orderInfo);
+
+        restOrderInfoMockMvc.perform(put("/api/order-infos/refund/{id}", orderInfo.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
+
+        // Validate the OrderInfo in the database
+        List<OrderInfo> orderInfoList = orderInfoRepository.findAll();
+        OrderInfo testOrderInfo = orderInfoList.get(orderInfoList.size() - 1);
+        assertThat(testOrderInfo.getStatus()).isEqualTo(OrderStatus.PENDING_CANCEL);
     }
 }
