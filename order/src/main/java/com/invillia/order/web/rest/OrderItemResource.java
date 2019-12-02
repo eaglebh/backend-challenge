@@ -1,9 +1,11 @@
 package com.invillia.order.web.rest;
 
 import com.invillia.order.domain.OrderItem;
+import com.invillia.order.service.NonRefundableException;
 import com.invillia.order.service.OrderItemService;
 import com.invillia.order.web.rest.errors.BadRequestAlertException;
 
+import com.invillia.order.web.rest.errors.NonRefundableAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -125,5 +127,31 @@ public class OrderItemResource {
         log.debug("REST request to delete OrderItem : {}", id);
         orderItemService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     * {@code PUT /order-items-refund/:id} : Refunds an existing orderItem.
+     *
+     * @param id the id of the orderItem to refund.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated orderItem,
+     * or with status {@code 400 (Bad Request)} if the orderInfo is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the orderInfo couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping("/order-items/refund/{id}")
+    public ResponseEntity<OrderItem> refundOrderItem(@PathVariable UUID id) throws URISyntaxException {
+        log.debug("REST request to refund OrderItem : {}", id);
+        if (id == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+
+        Optional<OrderItem> result;
+        try {
+            result = orderItemService.refund(id);
+        } catch (NonRefundableException ex) {
+            throw new NonRefundableAlertException(ex.getMessage(), ENTITY_NAME, "refundexpired");
+        }
+        return ResponseUtil.wrapOrNotFound(result, HeaderUtil.createEntityUpdateAlert(
+            applicationName, true, ENTITY_NAME, id.toString()));
     }
 }

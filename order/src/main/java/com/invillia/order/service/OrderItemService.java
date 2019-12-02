@@ -1,6 +1,9 @@
 package com.invillia.order.service;
 
+import com.invillia.order.domain.OrderInfo;
 import com.invillia.order.domain.OrderItem;
+import com.invillia.order.domain.enumeration.OrderItemStatus;
+import com.invillia.order.domain.enumeration.OrderStatus;
 import com.invillia.order.repository.OrderItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,5 +75,19 @@ public class OrderItemService {
     public void delete(UUID id) {
         log.debug("Request to delete OrderItem : {}", id);
         orderItemRepository.deleteById(id);
+    }
+
+    public Optional<OrderItem> refund(UUID id) throws NonRefundableException {
+        Optional<OrderItem> orderItem = orderItemRepository.findById(id);
+        if (orderItem.isPresent()) {
+            OrderItem currentOrderItem = orderItem.get();
+            if (currentOrderItem.getOrder() != null && currentOrderItem.getOrder().isCancellable()) {
+                currentOrderItem.setStatus(OrderItemStatus.CANCELLED);
+                // @TODO implement paymentApiClient properly and call refund
+            } else {
+                throw new NonRefundableException("Non refundable after expiration");
+            }
+        }
+        return orderItem;
     }
 }

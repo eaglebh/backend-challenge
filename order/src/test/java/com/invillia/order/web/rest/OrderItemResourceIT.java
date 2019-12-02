@@ -1,12 +1,16 @@
 package com.invillia.order.web.rest;
 
 import com.invillia.order.OrderApp;
+import com.invillia.order.domain.OrderInfo;
 import com.invillia.order.domain.OrderItem;
+import com.invillia.order.domain.enumeration.OrderItemStatus;
+import com.invillia.order.domain.enumeration.OrderStatus;
+import com.invillia.order.repository.OrderInfoRepository;
 import com.invillia.order.repository.OrderItemRepository;
 import com.invillia.order.service.OrderItemService;
 import com.invillia.order.web.rest.errors.ExceptionTranslator;
-
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,7 @@ import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,8 +34,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import com.invillia.order.domain.enumeration.OrderItemStatus;
 /**
  * Integration tests for the {@link OrderItemResource} REST controller.
  */
@@ -54,6 +57,9 @@ public class OrderItemResourceIT {
 
     @Autowired
     private OrderItemService orderItemService;
+
+    @Autowired
+    private OrderInfoRepository orderInfoRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -144,6 +150,9 @@ public class OrderItemResourceIT {
     @Test
     @Transactional
     public void createOrderItemWithExistingId() throws Exception {
+        // Initialize the database
+        orderItemRepository.saveAndFlush(orderItem);
+
         List<OrderItem> orderItemListBeforeCreate = orderItemRepository.findAll();
         int databaseSizeBeforeCreate = orderItemListBeforeCreate.size();
 
@@ -271,5 +280,54 @@ public class OrderItemResourceIT {
         // Validate the database contains one less item
         List<OrderItem> orderItemList = orderItemRepository.findAll();
         assertThat(orderItemList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    @Disabled
+    public void noRefundOrderItemAfterMaxRefundDays() throws Exception {
+        // Initialize the database
+        OrderInfo orderInfo = new OrderInfo()
+            .confirmationDate(LocalDate.now().minusDays(OrderInfo.getMaxRefundDays()+1))
+            .status(OrderStatus.PENDING_PAYMENT)
+            .addItem(orderItem)
+            .storeId(UUID.randomUUID());
+        orderInfoRepository.saveAndFlush(orderInfo);
+        em.detach(orderInfo);
+
+        // Update the orderItem
+        restOrderItemMockMvc.perform(put("/api/order-items-refund/{id}", orderItem.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isPreconditionFailed());
+
+        // Validate the OrderInfo and OrderItem in the database
+        OrderInfo currentOrderInfo = orderInfoRepository.findById(orderInfo.getId()).get();
+        assertThat(orderInfo.getStatus()).isEqualTo(currentOrderInfo.getStatus());
+        OrderItem testOrderItem = orderItemRepository.findById(orderItem.getId()).get();
+        assertThat(testOrderItem.getStatus()).isEqualTo(orderItem.getStatus());
+    }
+
+    @Test
+    @Transactional
+    @Disabled
+    public void refundOrderItemBeforeMaxRefundDays() throws Exception {
+        // Initialize the database
+        OrderInfo orderInfo = new OrderInfo()
+            .confirmationDate(LocalDate.now().minusDays(OrderInfo.getMaxRefundDays()))
+            .status(OrderStatus.PENDING_PAYMENT)
+            .addItem(orderItem)
+            .storeId(UUID.randomUUID());
+        orderInfoRepository.saveAndFlush(orderInfo);
+        em.detach(orderInfo);
+
+        restOrderItemMockMvc.perform(put("/api/order-items/refund/{id}", orderItem.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
+
+        // Validate the OrderInfo and OrderItem in the database
+        OrderInfo currentOrderInfo = orderInfoRepository.findById(orderInfo.getId()).get();
+        assertThat(orderInfo.getStatus()).isEqualTo(currentOrderInfo.getStatus());
+        OrderItem testOrderItem = orderItemRepository.findById(orderItem.getId()).get();
+        assertThat(testOrderItem.getStatus()).isEqualTo(orderItem.getStatus());
     }
 }
