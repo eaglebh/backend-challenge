@@ -1,10 +1,10 @@
 package com.invillia.payment.service;
 
 import com.invillia.payment.domain.Payment;
+import com.invillia.payment.domain.enumeration.PaymentStatus;
 import com.invillia.payment.repository.PaymentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,5 +70,24 @@ public class PaymentService {
     public void delete(UUID id) {
         log.debug("Request to delete Payment : {}", id);
         paymentRepository.deleteById(id);
+    }
+
+    /**
+     * Cancel the payment by id.
+     *
+     * @param id the id of the entity.
+     */
+    public Optional<Payment> cancel(UUID id) throws NonCancellableException {
+        Optional<Payment> payment = paymentRepository.findById(id);
+        if (payment.isPresent()) {
+            Payment currentOrderInfo = payment.get();
+            if (currentOrderInfo.getStatus().equals(PaymentStatus.DONE)) {
+                currentOrderInfo.setStatus(PaymentStatus.CANCELLED);
+                // TODO implement send message to "observers" about payment cancellation
+            } else {
+                throw new NonCancellableException("Can't be cancelled while not concluded");
+            }
+        }
+        return payment;
     }
 }

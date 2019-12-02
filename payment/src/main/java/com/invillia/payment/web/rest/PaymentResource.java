@@ -1,9 +1,11 @@
 package com.invillia.payment.web.rest;
 
 import com.invillia.payment.domain.Payment;
+import com.invillia.payment.service.NonCancellableException;
 import com.invillia.payment.service.PaymentService;
 import com.invillia.payment.web.rest.errors.BadRequestAlertException;
 
+import com.invillia.payment.web.rest.errors.NonCancellableAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -115,5 +117,31 @@ public class PaymentResource {
         log.debug("REST request to delete Payment : {}", id);
         paymentService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     * {@code PUT  /payments/cancel/{id}} : Cancel an existing payment.
+     *
+     * @param id id of the payment to cancel.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the cancelled payment,
+     * or with status {@code 400 (Bad Request)} if the payment is not valid,
+     * or with status {@code 412 (PreconditionFailed)} if the payment cancellation is not allowed,
+     * or with status {@code 500 (Internal Server Error)} if the payment couldn't be cancelled.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping("/payments/cancel/{id}")
+    public ResponseEntity<Payment> updatePayment(@PathVariable UUID id) throws URISyntaxException {
+        log.debug("REST request to update Payment : {}", id);
+        if (id == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        Optional<Payment> result;
+        try {
+            result = paymentService.cancel(id);
+        } catch (NonCancellableException ex) {
+            throw new NonCancellableAlertException(ex.getMessage(), ENTITY_NAME, "noncancellable");
+        }
+        return ResponseUtil.wrapOrNotFound(result, HeaderUtil.createEntityUpdateAlert(
+            applicationName, true, ENTITY_NAME, id.toString()));
     }
 }
