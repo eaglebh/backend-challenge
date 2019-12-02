@@ -75,3 +75,5 @@ $ docker-compose logs -f
 
 ## TODOs
 * The cancellation/refund call between the Order microservice and the Payment microservice was not properly implemented. It should use some async implementation as messaging queues for example or an async REST call.
+* Add more tests to check corner cases
+* Add test for refund at Payment microservice
