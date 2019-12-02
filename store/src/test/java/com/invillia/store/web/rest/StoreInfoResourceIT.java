@@ -124,6 +124,9 @@ public class StoreInfoResourceIT {
     @Test
     @Transactional
     public void createStoreInfoWithExistingId() throws Exception {
+        // Initialize the database
+        storeInfoRepository.saveAndFlush(storeInfo);
+
         List<StoreInfo> storeInfoListBeforeCreate = storeInfoRepository.findAll();
         int databaseSizeBeforeCreate = storeInfoListBeforeCreate.size();
 

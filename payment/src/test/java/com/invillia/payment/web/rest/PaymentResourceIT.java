@@ -145,6 +145,9 @@ public class PaymentResourceIT {
     @Test
     @Transactional
     public void createPaymentWithExistingId() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
         List<Payment> paymentListBeforeCreate = paymentRepository.findAll();
         int databaseSizeBeforeCreate = paymentListBeforeCreate.size();
 
